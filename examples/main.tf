@@ -17,3 +17,7 @@ module "version" {
 output "version" {
   value = module.version.product_version
 }
+
+output "builds" {
+  value = module.version.product_builds
+}
