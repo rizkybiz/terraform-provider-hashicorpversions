@@ -16,10 +16,28 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-// VersionInfo is a struct for unmarshaling
+// Version is a struct for unmarshaling
+type Version struct {
+	Name     string                 `json:"name"`
+	Versions map[string]VersionInfo `json:"versions"`
+}
+
 type VersionInfo struct {
-	Name     string                     `json:"name"`
-	Versions map[string]json.RawMessage `json:"versions"`
+	Name              string   `json:"name"`
+	Version           string   `json:"version"`
+	SHASums           string   `json:"shasums"`
+	SHASumsSignature  string   `json:"shasums_signature"`
+	SHASumsSignatures []string `json:"shasums_signatures"`
+	Builds            []Build  `json:"builds"`
+}
+
+type Build struct {
+	Name     string `json:"name"`
+	Version  string `json:"version"`
+	OS       string `json:"os"`
+	Arch     string `json:"arch"`
+	Filename string `json:"filename"`
+	URL      string `json:"url"`
 }
 
 func dataSourceVersion() *schema.Resource {
@@ -33,6 +51,53 @@ func dataSourceVersion() *schema.Resource {
 			"product": {
 				Type:     schema.TypeString,
 				Required: true,
+			},
+			"shasums": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
+			"shasums_signature": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
+			"shasums_signatures": {
+				Type:     schema.TypeList,
+				Computed: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
+			"builds": {
+				Type:     schema.TypeList,
+				Computed: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"name": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"version": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"os": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"arch": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"filename": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"url": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+					},
+				},
 			},
 		},
 	}
@@ -65,7 +130,7 @@ func dataSourceVersionRead(ctx context.Context, d *schema.ResourceData, m interf
 	}
 
 	// unmarshal JSON body into VersionInfo
-	vi := VersionInfo{}
+	vi := Version{}
 	err = json.Unmarshal(body, &vi)
 	if err != nil {
 		return diag.FromErr(err)
@@ -91,11 +156,12 @@ func dataSourceVersionRead(ctx context.Context, d *schema.ResourceData, m interf
 	}
 	sort.Sort(semver.Collection(vs))
 	recent := vs[len(vs)-1].String()
+	info := vi.Versions[vs[len(vs)-1].String()]
 
-	// set the version within the data source
-	err = d.Set("version", recent)
+	// set the info within the data source
+	err = setDataSourceInfo(d, recent, info)
 	if err != nil {
-		return diag.FromErr(err)
+		diag.FromErr(err)
 	}
 
 	// always run
@@ -103,4 +169,32 @@ func dataSourceVersionRead(ctx context.Context, d *schema.ResourceData, m interf
 
 	// default return
 	return diags
+}
+
+func setDataSourceInfo(d *schema.ResourceData, version string, info VersionInfo) error {
+	err := d.Set("version", version)
+	if err != nil {
+		return err
+	}
+	err = d.Set("product", info.Name)
+	if err != nil {
+		return err
+	}
+	err = d.Set("shasums", info.SHASums)
+	if err != nil {
+		return err
+	}
+	err = d.Set("shasums_signature", info.SHASumsSignature)
+	if err != nil {
+		return err
+	}
+	err = d.Set("shasums_signatures", info.SHASumsSignatures)
+	if err != nil {
+		return err
+	}
+	err = d.Set("builds", info.Builds)
+	if err != nil {
+		return err
+	}
+	return nil
 }
