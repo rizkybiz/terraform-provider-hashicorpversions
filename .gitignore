@@ -2,3 +2,5 @@
 *.tfvars
 *.tfstate
 *.lock.hcl
+*.backup
+*.lock.info
