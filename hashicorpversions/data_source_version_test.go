@@ -21,7 +21,7 @@ func TestAccDataSourceVersion_Consulbasic(t *testing.T) {
 			{
 				Config: testAccDataSourceVersion_ConsulBaseConfig(),
 				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr(datasourceName, "version", regexp.MustCompile(^regexStr)),
+					resource.TestCheckResourceAttr(datasourceName, "version", regexp.MustCompile(`^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$`)),
 					resource.TestCheckResourceAttr(datasourceName, "lex_bot", resourceName, "lex_bot"),
 				),
 			},
