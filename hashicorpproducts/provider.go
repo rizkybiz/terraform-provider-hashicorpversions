@@ -1,4 +1,4 @@
-package hashicorpproducts
+package hashicorpversions
 
 import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -8,7 +8,7 @@ import (
 func Provider() *schema.Provider {
 	return &schema.Provider{
 		DataSourcesMap: map[string]*schema.Resource{
-			"hashicorp_products_version": dataSourceVersion(),
+			"hashicorp_versions_product": dataSourceProduct(),
 		},
 	}
 }

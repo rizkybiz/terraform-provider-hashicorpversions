@@ -1,4 +1,4 @@
-module github.com/rizkybiz/terraform-provider-hashicorpproducts
+module github.com/rizkybiz/terraform-provider-hashicorpversions
 
 go 1.17
 

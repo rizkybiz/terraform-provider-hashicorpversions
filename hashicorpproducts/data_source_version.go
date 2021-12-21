@@ -40,7 +40,7 @@ type Build struct {
 	URL      string `json:"url"`
 }
 
-func dataSourceVersion() *schema.Resource {
+func dataSourceProduct() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceVersionRead,
 		Schema: map[string]*schema.Schema{

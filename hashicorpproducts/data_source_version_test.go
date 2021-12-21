@@ -1,4 +1,4 @@
-package hashicorpproducts
+package hashicorpversions
 
 import (
 	"fmt"
@@ -26,9 +26,8 @@ func TestAccDataSourceVersion_Consulbasic(t *testing.T) {
 
 func testAccDataSourceVersion_ConsulBaseConfig() string {
 	return fmt.Sprintf(`
-
-data "hashicorp_products_version" "consul_test" {
-  product = "consul"
+data "hashicorp_versions_product" "consul_test" {
+  name = "consul"
 }
 `)
 }
