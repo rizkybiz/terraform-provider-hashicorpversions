@@ -4,4 +4,5 @@
 *.lock.hcl
 *.backup
 *.lock.info
-*.vscode
+*.vscode/
+terraform-provider-hashicorpversions
