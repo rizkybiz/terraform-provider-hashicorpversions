@@ -4,3 +4,4 @@
 *.lock.hcl
 *.backup
 *.lock.info
+*.vscode
