@@ -23,34 +23,58 @@ type Version struct {
 }
 
 type VersionInfo struct {
+	Builds            []BuildInfo `json:"builds"`
 	Name              string      `json:"name"`
-	Version           string      `json:"version"`
 	SHASums           string      `json:"shasums"`
 	SHASumsSignature  string      `json:"shasums_signature"`
 	SHASumsSignatures []string    `json:"shasums_signatures"`
-	Builds            []BuildInfo `json:"builds"`
+	Version           string      `json:"version"`
 }
 
 type BuildInfo struct {
-	Name     string `json:"name"`
-	Version  string `json:"version"`
-	OS       string `json:"os"`
 	Arch     string `json:"arch"`
 	Filename string `json:"filename"`
+	Name     string `json:"name"`
+	OS       string `json:"os"`
 	URL      string `json:"url"`
+	Version  string `json:"version"`
 }
 
 func dataSourceProduct() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceProductRead,
 		Schema: map[string]*schema.Schema{
-			"version": {
-				Type:     schema.TypeString,
+			"builds": {
+				Type:     schema.TypeList,
 				Computed: true,
-			},
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"arch": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"filename": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"name": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"os": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"url": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"version": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+					},
+				},
 			},
 			"shasums": {
 				Type:     schema.TypeString,
@@ -67,37 +91,9 @@ func dataSourceProduct() *schema.Resource {
 					Type: schema.TypeString,
 				},
 			},
-			"builds": {
-				Type:     schema.TypeList,
+			"version": {
+				Type:     schema.TypeString,
 				Computed: true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"name": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"version": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"os": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"arch": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"filename": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"url": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-					},
-				},
 			},
 		},
 	}
