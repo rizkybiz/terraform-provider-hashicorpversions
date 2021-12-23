@@ -42,13 +42,13 @@ type Build struct {
 
 func dataSourceProduct() *schema.Resource {
 	return &schema.Resource{
-		ReadContext: dataSourceVersionRead,
+		ReadContext: dataSourceProductRead,
 		Schema: map[string]*schema.Schema{
 			"version": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"product": {
+			"name": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
@@ -103,7 +103,7 @@ func dataSourceProduct() *schema.Resource {
 	}
 }
 
-func dataSourceVersionRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func dataSourceProductRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	// setup the HTTP client
 	client := &http.Client{Timeout: 10 * time.Second}
 
@@ -111,7 +111,7 @@ func dataSourceVersionRead(ctx context.Context, d *schema.ResourceData, m interf
 	var diags diag.Diagnostics
 
 	// assemble the HTTP request
-	req, err := http.NewRequest("GET", fmt.Sprintf("https://releases.hashicorp.com/%s/index.json", d.Get("product")), nil)
+	req, err := http.NewRequest("GET", fmt.Sprintf("https://releases.hashicorp.com/%s/index.json", d.Get("name")), nil)
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -176,7 +176,7 @@ func setDataSourceInfo(d *schema.ResourceData, version string, info VersionInfo)
 	if err != nil {
 		return err
 	}
-	err = d.Set("product", info.Name)
+	err = d.Set("name", info.Name)
 	if err != nil {
 		return err
 	}
@@ -192,9 +192,9 @@ func setDataSourceInfo(d *schema.ResourceData, version string, info VersionInfo)
 	if err != nil {
 		return err
 	}
-	err = d.Set("builds", info.Builds)
-	if err != nil {
-		return err
-	}
+	// err = d.Set("builds", info.Builds)
+	// if err != nil {
+	// 	return err
+	// }
 	return nil
 }

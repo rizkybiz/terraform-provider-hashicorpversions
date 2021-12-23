@@ -8,7 +8,7 @@ import (
 func Provider() *schema.Provider {
 	return &schema.Provider{
 		DataSourcesMap: map[string]*schema.Resource{
-			"hashicorp_versions_product": dataSourceProduct(),
+			"hashicorpversions_product": dataSourceProduct(),
 		},
 	}
 }
