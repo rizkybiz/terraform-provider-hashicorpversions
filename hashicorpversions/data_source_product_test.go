@@ -18,6 +18,7 @@ func TestAccDataSourceProduct_Consulbasic(t *testing.T) {
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestMatchResourceAttr(datasourceName, "version", regexp.MustCompile(`^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$`)),
 					resource.TestCheckResourceAttr(datasourceName, "name", "consul"),
+					resource.TestCheckResourceAttr(datasourceName, "builds.#", "11"),
 				),
 			},
 		},

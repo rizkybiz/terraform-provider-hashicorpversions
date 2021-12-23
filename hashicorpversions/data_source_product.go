@@ -23,15 +23,15 @@ type Version struct {
 }
 
 type VersionInfo struct {
-	Name              string   `json:"name"`
-	Version           string   `json:"version"`
-	SHASums           string   `json:"shasums"`
-	SHASumsSignature  string   `json:"shasums_signature"`
-	SHASumsSignatures []string `json:"shasums_signatures"`
-	Builds            []Build  `json:"builds"`
+	Name              string      `json:"name"`
+	Version           string      `json:"version"`
+	SHASums           string      `json:"shasums"`
+	SHASumsSignature  string      `json:"shasums_signature"`
+	SHASumsSignatures []string    `json:"shasums_signatures"`
+	Builds            []BuildInfo `json:"builds"`
 }
 
-type Build struct {
+type BuildInfo struct {
 	Name     string `json:"name"`
 	Version  string `json:"version"`
 	OS       string `json:"os"`
@@ -192,9 +192,28 @@ func setDataSourceInfo(d *schema.ResourceData, version string, info VersionInfo)
 	if err != nil {
 		return err
 	}
-	// err = d.Set("builds", info.Builds)
-	// if err != nil {
-	// 	return err
-	// }
+
+	var builds []interface{}
+	for i := len(info.Builds) - 1; i >= 0; i-- {
+		builds = append(builds, parseVersionBuilds(info.Builds[i]))
+	}
+
+	err = d.Set("builds", builds)
+	if err != nil {
+		return err
+	}
 	return nil
+}
+
+func parseVersionBuilds(build BuildInfo) map[string]interface{} {
+	ret := map[string]interface{}{
+		"arch":     build.Arch,
+		"filename": build.Filename,
+		"name":     build.Name,
+		"os":       build.OS,
+		"url":      build.URL,
+		"version":  build.Version,
+	}
+
+	return ret
 }
