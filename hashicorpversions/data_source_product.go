@@ -95,6 +95,10 @@ func dataSourceProduct() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
+			"name": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
 		},
 	}
 }
