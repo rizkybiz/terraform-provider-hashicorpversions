@@ -2,3 +2,7 @@
 *.tfvars
 *.tfstate
 *.lock.hcl
+*.backup
+*.lock.info
+*.vscode/
+terraform-provider-hashicorpversions
