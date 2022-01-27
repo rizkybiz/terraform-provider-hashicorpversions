@@ -13,6 +13,16 @@ data "hashicorpversions_product" "product_version" {
   name = "consul"
 }
 
+variable "arch" {
+  description = "the architecture of the HashiCorp product build"
+  default = "amd64"
+}
+
+variable "os" {
+  description = "the operating system you're deploying the HashiCorp product to"
+  default = "linux"
+}
+
 locals {
   version = data.hashicorpversions_product.product_version.version
   builds = data.hashicorpversions_product.product_version.builds
