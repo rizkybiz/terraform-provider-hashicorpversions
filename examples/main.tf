@@ -1,23 +1,22 @@
 terraform {
   required_providers {
     hashicorpversions = {
-      version = "0.0.1"
-      source = "terraform.example.com/local/hashicorpversions"
+      source  = "terraform.example.com/local/hashicorpversions"
+      version = "0.1.0"
     }
   }
 }
 
 provider "hashicorpversions" {}
 
-module "version" {
-  source = "./version"
-  product_name = "consul"
+data "hashicorpversions_product" "product_version" {
+  name = "consul"
 }
 
-output "version" {
-  value = module.version.product_version
+output "product_version" {
+  value = data.hashicorpversions_product.product_version.version
 }
 
-output "builds" {
-  value = module.version.product_builds
+output "product_builds" {
+  value = data.hashicorpversions_product.product_version.builds
 }
